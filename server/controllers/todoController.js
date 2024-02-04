@@ -1,9 +1,14 @@
-import fs from "fs/promises";
 import { nanoid } from "nanoid";
+
+import config from "../config/config.js";
+
+import { readFile, writeFile } from "../helper/fileSystem.js";
+import { isTodoExists } from "../helper/helper.js";
 
 export const getTodos = async (req, res) => {
   try {
-    const todos = await fs.readFile("data.txt", "utf-8");
+    const todos = await readFile(config.FILE_PATH);
+
     res.status(200).json({ todos });
   } catch (error) {
     res.status(422).json({ message: error.message });
@@ -13,8 +18,12 @@ export const getTodos = async (req, res) => {
 export const getTodo = async (req, res) => {
   const { id } = req.params;
   try {
-    const todos = await fs.readFile("data.txt", "utf-8");
-    const todo = JSON.parse(todos).find((todo) => todo.id === id);
+    const todos = await readFile(config.FILE_PATH);
+
+    const todo = todos.find((todo) => todo.id === id);
+    if (!todo) {
+      throw new Error(`there is no todo with id ${id}`);
+    }
     res.status(200).json({ todo });
   } catch (error) {
     res.status(422).json({ message: error.message });
@@ -29,16 +38,14 @@ export const addTodo = async (req, res) => {
     completed: false,
   };
   try {
-    const todos = await fs.readFile("data.txt", "utf-8");
-    const Todos = JSON.parse(todos);
-    const newTodos = [...Todos, newTodo];
-    await fs.writeFile("data.txt", JSON.stringify(newTodos), "utf-8");
+    const todos = await readFile(config.FILE_PATH);
+    const newTodos = [...todos, newTodo];
+    await writeFile(config.FILE_PATH, newTodos);
     res.status(200).json({ message: "todo added successfully" });
   } catch (error) {
+    console.log({ ...error });
     if (error.code === "ENOENT") {
-      const temp = [].push(newTodo);
-      const todo = JSON.stringify([newTodo]);
-      await fs.writeFile("data.txt", todo, "utf-8");
+      await writeFile(config.FILE_PATH, [newTodo]);
       res.status(200).json({ message: "todo created successfully" });
       return;
     }
@@ -50,14 +57,16 @@ export const updateTodo = async (req, res) => {
   const { id } = req.params;
   const { todo } = req.body;
   try {
-    const todos = await fs.readFile("data.txt", "utf-8");
-    const Todos = JSON.parse(todos);
-    const updateTodos = Todos.map((todoItem) =>
-      todo === id ? { ...todoItem, todo } : todoItem
-    );
-    const UpdateTodos = JSON.stringify(updateTodos);
+    const todos = await readFile(config.FILE_PATH);
 
-    await fs.writeFile("data.txt", UpdateTodos, "utf-8");
+    if (!isTodoExists(id, todos)) {
+      throw new Error(`there is no todo with id ${id}`);
+    }
+    const updatedTodos = todos.map((todoItem) =>
+      todoItem.id === id ? { ...todoItem, todo } : todoItem
+    );
+
+    await writeFile(config.FILE_PATH, updatedTodos);
 
     res.status(200).json({ message: "todo updated successfully" });
   } catch (error) {
@@ -68,11 +77,12 @@ export const updateTodo = async (req, res) => {
 export const deleteTodo = async (req, res) => {
   const { id } = req.params;
   try {
-    const todos = await fs.readFile("data.txt", "utf-8");
-    const Todos = JSON.parse(todos);
-    const deleteTodo = Todos.filter((todo) => todo.id !== id);
-    const DeletedTodo = JSON.stringify(deleteTodo);
-    await fs.writeFile("data.txt", DeletedTodo, "utf-8");
+    const todos = await readFile(config.FILE_PATH);
+    if (!isTodoExists(id, todos)) {
+      throw new Error(`there is no todo with id ${id}`);
+    }
+    const deletedTodo = todos.filter((todo) => todo.id !== id);
+    await writeFile(config.FILE_PATH, deletedTodo);
     res.status(200).json({ message: "todo deleted successfully" });
   } catch (error) {
     res.status(422).json({ message: error.message });
