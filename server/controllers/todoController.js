@@ -41,12 +41,12 @@ export const addTodo = async (req, res) => {
     const todos = await readFile(config.FILE_PATH);
     const newTodos = [...todos, newTodo];
     await writeFile(config.FILE_PATH, newTodos);
-    res.status(200).json({ message: "todo added successfully" });
+    res.status(200).json({ todo: newTodo });
   } catch (error) {
     console.log({ ...error });
     if (error.code === "ENOENT") {
       await writeFile(config.FILE_PATH, [newTodo]);
-      res.status(200).json({ message: "todo created successfully" });
+      res.status(200).json({ todo: newTodo });
       return;
     }
     res.status(422).json({ message: error.message });
@@ -68,7 +68,7 @@ export const updateTodo = async (req, res) => {
 
     await writeFile(config.FILE_PATH, updatedTodos);
 
-    res.status(200).json({ message: "todo updated successfully" });
+    res.status(200).json({ id, todo });
   } catch (error) {
     res.status(422).json({ message: error.message });
   }
@@ -83,7 +83,7 @@ export const deleteTodo = async (req, res) => {
     }
     const deletedTodo = todos.filter((todo) => todo.id !== id);
     await writeFile(config.FILE_PATH, deletedTodo);
-    res.status(200).json({ message: "todo deleted successfully" });
+    res.status(200).json({ id });
   } catch (error) {
     res.status(422).json({ message: error.message });
   }

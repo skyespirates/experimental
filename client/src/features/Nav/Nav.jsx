@@ -8,6 +8,12 @@ const Nav = () => {
           className={({ isActive }) => (isActive ? "active" : "")}
           to="/"
         >
+          home
+        </NavLink>
+        <NavLink
+          className={({ isActive }) => (isActive ? "active" : "")}
+          to="/posts"
+        >
           posts
         </NavLink>
         <NavLink

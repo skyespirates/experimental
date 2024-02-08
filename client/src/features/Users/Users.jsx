@@ -6,7 +6,7 @@ const Users = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.users);
 
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     dispatch(fetchUsers());
