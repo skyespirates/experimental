@@ -1,0 +1,13 @@
+<%- include('../partials/head', {title: 'Articles'}) %> <%-
+include('../partials/header') %>
+<body>
+  <div class="container">
+    <ul>
+      <% list.forEach(e =>{ %>
+      <li><%= e.title %></li>
+      <% }) %>
+    </ul>
+  </div>
+</body>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,26 @@
+<%- include('../partials/head') %> <%- include('../partials/header') %>
+<body>
+  <div class="container content">
+    <h1>Upload File</h1>
+    <h2>Hi, I'm <%= user.firstName %> <%= user.lastName %></h2>
+    <% if(user.isActive) { %>
+    <p>the user is <strong>active</strong></p>
+    <% } else { %>
+    <p>the user is <strong>unactive</strong></p>
+    <% } %>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor debitis
+      praesentium saepe quis quos earum quasi porro vel minima corporis hic
+      doloribus repudiandae nihil, consequatur dignissimos molestiae sapiente,
+      cupiditate provident!
+    </p>
+    <a href="/download">download</a>
+    <div>
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" />
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+  </div>
+</body>
+<%- include('../partials/footer') %>

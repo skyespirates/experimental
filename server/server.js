@@ -1,7 +1,10 @@
 const express = require("express");
 const fileUpload = require("express-fileupload");
+const axios = require("axios");
 
 const app = express();
+
+app.set("view engine", "ejs");
 
 app.use(
   fileUpload({
@@ -11,10 +14,28 @@ app.use(
     abortOnLimit: true,
   })
 );
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  const user = {
+    firstName: "skyes",
+    lastName: "crawford",
+    isActive: false,
+  };
+
+  res.render("pages/index", { user });
+});
+
+app.get("/list", async (req, res) => {
+  try {
+    const { data: list } = await axios(
+      "https://jsonplaceholder.typicode.com/todos?_limit=5"
+    );
+
+    res.render("pages/list", { list: list });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 });
 
 app.post("/upload", (req, res) => {
@@ -26,7 +47,7 @@ app.post("/upload", (req, res) => {
 
   image.mv(__dirname + "/upload/" + image.name);
 
-  res.sendStatus(200);
+  res.status(200).redirect("/");
 });
 
 app.get("/download", (req, res) => {
