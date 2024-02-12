@@ -1,12 +1,13 @@
 <%- include('../partials/head', {title: 'Articles'}) %> <%-
 include('../partials/header') %>
 <body>
-  <div class="container">
+  <div class="container content">
     <ul>
-      <% list.forEach(e =>{ %>
+      <% typeof list !== 'undefined' && list.forEach(e =>{ %>
       <li><%= e.title %></li>
       <% }) %>
     </ul>
+    <div><img src=" <%= image.data  %> " alt="<%= image.name %>" /></div>
   </div>
 </body>
 
