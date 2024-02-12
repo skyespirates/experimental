@@ -2,6 +2,7 @@ const express = require("express");
 const fileUpload = require("express-fileupload");
 const axios = require("axios");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 
 const Image = require("./models/Image");
 
@@ -9,6 +10,8 @@ const app = express();
 
 app.set("view engine", "ejs");
 
+// middleware
+app.use(morgan("tiny"));
 app.use(
   fileUpload({
     limits: {
@@ -26,14 +29,19 @@ app.get("/", (req, res) => {
 app.get("/list", async (req, res) => {
   try {
     const collections = await Image.find({});
-    image;
+    const images = collections.map((image) => {
+      return {
+        ...image,
+        data: "data:image/png;base64," + image.data.toString("base64"),
+      };
+    });
     const { name, data } = await Image.findById("65c97c246f02a20ec10a31eb");
     const img = {
       name,
       data: "data:image/png;base64," + data.toString("base64"),
     };
 
-    res.render("pages/list", { image: img });
+    res.render("pages/list", { images: images });
   } catch (error) {
     throw new Error(error.message);
   }

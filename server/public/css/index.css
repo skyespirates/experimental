@@ -1,3 +1,19 @@
 .content {
   min-height: calc(100vh - 56px - 40px);
 }
+
+.grid {
+  margin: 24px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.card {
+  height: 300px;
+  overflow: hidden;
+}
+
+.card img {
+  height: 100%;
+  width: 100%;
+}

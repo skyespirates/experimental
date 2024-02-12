@@ -2,12 +2,13 @@
 include('../partials/header') %>
 <body>
   <div class="container content">
-    <ul>
-      <% typeof list !== 'undefined' && list.forEach(e =>{ %>
-      <li><%= e.title %></li>
+    <div class="grid">
+      <% typeof images !== 'undefined' && images.forEach(e =>{ %>
+      <div class="card">
+        <img src="<%= e.data %>" alt="<%= e.name %>" />
+      </div>
       <% }) %>
-    </ul>
-    <div><img src=" <%= image.data  %> " alt="<%= image.name %>" /></div>
+    </div>
   </div>
 </body>
 
