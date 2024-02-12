@@ -20,21 +20,13 @@ app.use(
 app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res) => {
-  const user = {
-    firstName: "skyes",
-    lastName: "crawford",
-    isActive: false,
-  };
-
-  res.render("pages/index", { user });
+  res.render("pages/index");
 });
 
 app.get("/list", async (req, res) => {
   try {
-    // const { data: list } = await axios(
-    //   "https://jsonplaceholder.typicode.com/todos?_limit=5"
-    // );
-
+    const collections = await Image.find({});
+    image;
     const { name, data } = await Image.findById("65c97c246f02a20ec10a31eb");
     const img = {
       name,
@@ -49,12 +41,19 @@ app.get("/list", async (req, res) => {
 
 app.post("/upload", async (req, res) => {
   try {
+    // if there is no file sended, just redirect to the same page
+    if (!req.files) {
+      res.redirect("/");
+      return;
+    }
     const { image } = req.files;
+
     // reject upload for non image file
     if (!/^image/.test(image.mimetype)) {
       return res.sendStatus(400);
     }
 
+    // store image to folder /upload
     // image.mv(__dirname + "/upload/" + image.name);
 
     await Image.create({

@@ -1,26 +1,38 @@
-<%- include('../partials/head') %> <%- include('../partials/header') %>
+<%- include('../partials/head', {title: 'Upload File'}) %> <%-
+include('../partials/header') %>
 <body>
   <div class="container content">
-    <h1>Upload File</h1>
-    <h2>Hi, I'm <%= user.firstName %> <%= user.lastName %></h2>
-    <% if(user.isActive) { %>
-    <p>the user is <strong>active</strong></p>
-    <% } else { %>
-    <p>the user is <strong>unactive</strong></p>
-    <% } %>
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor debitis
-      praesentium saepe quis quos earum quasi porro vel minima corporis hic
-      doloribus repudiandae nihil, consequatur dignissimos molestiae sapiente,
-      cupiditate provident!
-    </p>
-    <a href="/download">download</a>
-    <div>
-      <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" />
-        <button type="submit">Upload</button>
-      </form>
+    <div
+      class="d-flex flex-column justify-content-center align-items-center py-5"
+    >
+      <div class="pb-4">
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+          <input type="file" id="formFile" name="image" onchange="preview()" />
+          <button type="submit" class="btn btn-primary">Upload</button>
+          <button
+            type="button"
+            onclick="clearImage()"
+            class="btn btn-secondary"
+          >
+            Clear
+          </button>
+        </form>
+      </div>
+      <img id="frame" src="" class="d-block" />
     </div>
   </div>
+  <script>
+    function preview() {
+      frame.src = URL.createObjectURL(event.target.files[0]);
+      frame.style.display = "block";
+      frame.style.width = "300px";
+    }
+    function clearImage() {
+      document.getElementById("formFile").value = null;
+      frame.src = "";
+      frame.style.display = "none";
+    }
+  </script>
+  <script src="/js/script.js" defer></script>
 </body>
 <%- include('../partials/footer') %>
